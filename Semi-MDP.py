@@ -30,11 +30,20 @@ def maxBackward(list):
         else:
             curr_back = 0
     return reps
-    
+
+def getBackwardArray(state_list):
+    backward = np.zeros(np.size(state_list))
+    for i in range(1,len(state_list)):
+        if state_list[i-1] == state_list[i]:
+            backward[i] = backward[i-1]+1
+        else:
+            backward[i] = 0
+    return backward
+            
 def SMDPTransMat(state_list):
     max_back_arr = maxBackward(state_list)
     state_num = len(max_back_arr)
-    print(max_back_arr)
+    #print(max_back_arr)
     rows = int(sum(max_back_arr))
     struct_mat = np.zeros([2,rows+state_num])
     item_num = 0
@@ -50,12 +59,12 @@ def SMDPTransMat(state_list):
             item_num+=1
             counter = 0
         if i < len(struct_mat[1]): struct_mat[1,i] = item_num+1
-    print(struct_mat)
+    #print(struct_mat)
         
     trans_mat = np.zeros([rows+state_num,state_num])
     #print(trans_mat)
-    
-    for i in range(len(trans_mat)):
+
+    """for i in range(len(trans_mat)):
         #for i in [0]:
         desired_back = struct_mat[0,i]
         origin = struct_mat[1,i]
@@ -77,8 +86,21 @@ def SMDPTransMat(state_list):
                         break
                 if backward == desired_back:
                     trans_mat[i,state_list[j+1]-1] += 1
-        #print("-----------------")
-    trans_mat[i] = trans_mat[i]/sum(trans_mat[i])
+                    
+        #print("-----------------")"""
+    backward = getBackwardArray(state_list)
+    #print(backward)
+    for i in range(len(trans_mat)):
+        #for i in [0]:
+        desired_back = struct_mat[0,i]
+        origin = struct_mat[1,i]
+        #print("desired_back", desired_back, "origin", origin)
+        #initialize elements to check backward
+        for j in range(len(state_list)-1):
+            if state_list[j] == origin:
+                if backward[j] == desired_back:
+                    trans_mat[i,state_list[j+1]-1] += 1            
+        trans_mat[i] = trans_mat[i]/sum(trans_mat[i])
     index = []
     for i in range(len(struct_mat[0])):
         index.append(str(int(struct_mat[0,i]))+"/"+str(int(struct_mat[1,i])))
@@ -87,13 +109,11 @@ def SMDPTransMat(state_list):
         cols.append(i+1)
     frame = pd.DataFrame(trans_mat.round(2), index=index, columns=cols)
     print(frame)
-                    
-        
-       
-            
+                            
 if __name__ =="__main__":
     file = open("exp/reduced_states_circles.csv","r")
+    #data = [4,4,4,4,3,3,4,3,4,3,3,3,4,3,3,3,3,3,2,2,2,3,2,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1]
     data = [[int(x) for x in rec] for rec in csv.reader(file)][0]
 
-    print (data)
+    #print (data)
     SMDPTransMat(data)
