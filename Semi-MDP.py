@@ -109,11 +109,13 @@ def SMDPTransMat(state_list):
         cols.append(i+1)
     frame = pd.DataFrame(trans_mat.round(2), index=index, columns=cols)
     print(frame)
+    pd.DataFrame(trans_mat.round(2)).to_csv('SM_trans_mat',header=False,index=False)
+
+
                             
 if __name__ =="__main__":
     file = open("exp/reduced_states_circles.csv","r")
-    #data = [4,4,4,4,3,3,4,3,4,3,3,3,4,3,3,3,3,3,2,2,2,3,2,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1]
-    data = [[int(x) for x in rec] for rec in csv.reader(file)][0]
-
+    data = [4,4,4,4,3,3,4,3,4,3,3,3,4,3,3,3,3,3,2,2,2,3,2,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1]
+    #data = [[int(x) for x in rec] for rec in csv.reader(file)][0]
     #print (data)
     SMDPTransMat(data)
