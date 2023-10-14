@@ -51,30 +51,7 @@ def SMDPTransMat(state_list, exp):
     trans_mat = np.zeros([rows+state_num,state_num])
     #print(trans_mat)
 
-    """for i in range(len(trans_mat)):
-        #for i in [0]:
-        desired_back = struct_mat[0,i]
-        origin = struct_mat[1,i]
-        #print("desired_back", desired_back, "origin", origin)
-        #initialize elements to check backward
-        for j in range(len(state_list)-1):
-            if state_list[j] == origin:
-                backward = 0
-                current_index = j
-                while backward <= desired_back:
-                    if current_index - 1 >= 0:
-                        #print("entered")
-                        if state_list[current_index-1] == origin:
-                            backward +=1
-                            current_index-=1
-                        else:
-                            break
-                    else:
-                        break
-                if backward == desired_back:
-                    trans_mat[i,state_list[j+1]-1] += 1
-                    
-        #print("-----------------")"""
+    
     backward = getBackwardArray(state_list)
     #print(struct_mat)
     #print(backward)

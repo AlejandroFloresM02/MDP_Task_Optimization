@@ -3,12 +3,6 @@ from scipy.io import loadmat
 import pandas as pd
 import csv 
 
-"""actions = {
-    "navigate1":1,
-    "navigate2":2,
-    "navigate3":3,
-    "recharge":4,
-}"""
 
 def joinMats(name_arr):
     mat = []
