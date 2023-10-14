@@ -3,19 +3,6 @@ from scipy.io import loadmat
 import pandas as pd
 import csv
 
-"""actions = {
-    "navigate1":1,
-    "navigate2":2,
-    "navigate3":3,
-    "recharge":4,
-}
-state_names = ["CRITICAL","LOW","MEDIUM","HIGH"]
-systemData = loadmat('system_data.mat')
-trans_mats = systemData["transition_mats"]
-discount_fact = systemData["discount"][0]
-rewards = systemData["rewards"]
-state_sequence =[] """
-
 def maxBackward(list):
     unique_set = sorted(set(list))
     max_back = len(unique_set)
@@ -40,7 +27,7 @@ def getBackwardArray(state_list):
             backward[i] = 0
     return backward
             
-def SMDPTransMat(state_list):
+def SMDPTransMat(state_list, exp):
     max_back_arr = maxBackward(state_list)
     state_num = len(max_back_arr)
     #print(max_back_arr)
@@ -89,6 +76,7 @@ def SMDPTransMat(state_list):
                     
         #print("-----------------")"""
     backward = getBackwardArray(state_list)
+    #print(struct_mat)
     #print(backward)
     for i in range(len(trans_mat)):
         #for i in [0]:
@@ -109,13 +97,16 @@ def SMDPTransMat(state_list):
         cols.append(i+1)
     frame = pd.DataFrame(trans_mat.round(2), index=index, columns=cols)
     print(frame)
-    pd.DataFrame(trans_mat.round(2)).to_csv('SM_trans_mat',header=False,index=False)
+    trans_mat = np.insert(trans_mat,0,[struct_mat[1,:],struct_mat[0,:]],axis=1)
+    #print(trans_mat)
+    pd.DataFrame(trans_mat.round(2)).to_csv('SM_trans_mat_'+ exp +'.csv',header=False,index=False)
 
 
                             
 if __name__ =="__main__":
-    file = open("exp/reduced_states_circles.csv","r")
-    data = [4,4,4,4,3,3,4,3,4,3,3,3,4,3,3,3,3,3,2,2,2,3,2,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1]
-    #data = [[int(x) for x in rec] for rec in csv.reader(file)][0]
+    exp = "recharge"
+    file = open("exp/" + exp + ".csv","r")
+    #data = [4,4,4,4,3,3,4,3,4,3,3,3,4,3,3,3,3,3,2,2,2,3,2,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1]
+    data = [[int(x) for x in rec] for rec in csv.reader(file)][0]
     #print (data)
-    SMDPTransMat(data)
+    SMDPTransMat(data, exp)
