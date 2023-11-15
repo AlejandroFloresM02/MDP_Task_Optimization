@@ -48,31 +48,66 @@ uri = uri_helper.uri_from_env(default='radio://0/100/2M/E7E7E7E7E7')
 # Change the sequence according to your setup
 #             x    y    z  YAW
 sequence = [
-    (0.400,0.400,1.500,0),
-    (0.400,1.000,1.500,0),
-    (0.400,1.600,1.500,0),
-    (1.000,1.800,1.500,0),
-    (1.000,1.200,1.500,0),
-    (1.000,0.600,1.500,0),
-    (1.600,0.400,1.500,0),
-    (1.600,1.000,1.500,0),
-    (1.600,1.600,1.500,0),
-    (2.200,1.800,1.500,0),
-    (2.200,1.200,1.500,0),
-    (2.200,0.600,1.500,0),
-    (2.800,0.400,1.500,0),
-    (2.800,1.000,1.500,0),
-    (2.800,1.600,1.500,0),
-    (3.400,1.800,1.500,0),
-    (3.400,1.200,1.500,0),
-    (3.400,0.600,1.500,0),
-    (4.000,0.400,1.500,0),
-    (4.000,1.000,1.500,0),
-    (4.000,1.600,1.500,0),
-    (4.600,1.800,1.500,0),
-    (4.600,1.200,1.500,0),
-    (4.600,0.600,1.500,0),
-    (2.5,1,0.4,0),
+    (1.000,0.500,1.500,0),
+    (1.000,0.800,1.500,0),
+    (1.000,1.100,1.500,0),
+    (1.000,1.400,1.500,0),
+    (1.000,1.700,1.500,0),
+    (1.300,1.700,1.500,0),
+    (1.300,1.400,1.500,0),
+    (1.300,1.100,1.500,0),
+    (1.300,0.800,1.500,0),
+    (1.300,0.500,1.500,0),
+    (1.600,0.500,1.500,0),
+    (1.600,0.800,1.500,0),
+    (1.600,1.100,1.500,0),
+    (1.600,1.400,1.500,0),
+    (1.600,1.700,1.500,0),
+    (1.900,1.700,1.500,0),
+    (1.900,1.400,1.500,0),
+    (1.900,1.100,1.500,0),
+    (1.900,0.800,1.500,0),
+    (1.900,0.500,1.500,0),
+    (2.200,0.500,1.500,0),
+    (2.200,0.800,1.500,0),
+    (2.200,1.100,1.500,0),
+    (2.200,1.400,1.500,0),
+    (2.200,1.700,1.500,0),
+    (2.500,1.700,1.500,0),
+    (2.500,1.400,1.500,0),
+    (2.500,1.100,1.500,0),
+    (2.500,0.800,1.500,0),
+    (2.500,0.500,1.500,0),
+    (2.800,0.500,1.500,0),
+    (2.800,0.800,1.500,0),
+    (2.800,1.100,1.500,0),
+    (2.800,1.400,1.500,0),
+    (2.800,1.700,1.500,0),
+    (3.100,1.700,1.500,0),
+    (3.100,1.400,1.500,0),
+    (3.100,1.100,1.500,0),
+    (3.100,0.800,1.500,0),
+    (3.100,0.500,1.500,0),
+    (3.400,0.500,1.500,0),
+    (3.400,0.800,1.500,0),
+    (3.400,1.100,1.500,0),
+    (3.400,1.400,1.500,0),
+    (3.400,1.700,1.500,0),
+    (3.700,1.700,1.500,0),
+    (3.700,1.400,1.500,0),
+    (3.700,1.100,1.500,0),
+    (3.700,0.800,1.500,0),
+    (3.700,0.500,1.500,0),
+    (4.000,0.500,1.500,0),
+    (4.000,0.800,1.500,0),
+    (4.000,1.100,1.500,0),
+    (4.000,1.400,1.500,0),
+    (4.000,1.700,1.500,0),
+    (4.300,1.700,1.500,0),
+    (4.300,1.400,1.500,0),
+    (4.300,1.100,1.500,0),
+    (4.300,0.800,1.500,0),
+    (4.300,0.500,1.500,0),
 ]
 
 
@@ -132,12 +167,14 @@ def position_callback(timestamp, data, logconf):
     z = data['kalman.stateZ']
     bat = data["pm.vbat"]
     print('pos: ({}, {}, {}, {})'.format(x, y, z, bat))
-    with open("temp/last_v.txt", "w") as file:
-        file.write(str(bat))
-
+    try:
+        with open("temp/last_v.txt", "w") as file:
+            file.write(str(bat))
+    except:
+        print("Busy")
 
 def start_position_printing(scf):
-    log_conf = LogConfig(name='Position', period_in_ms=20)
+    log_conf = LogConfig(name='Position', period_in_ms=100)
     log_conf.add_variable('kalman.stateX', 'float')
     log_conf.add_variable('kalman.stateY', 'float')
     log_conf.add_variable('kalman.stateZ', 'float')
@@ -153,17 +190,29 @@ def run_sequence(scf, sequence):
 
     for position in range(len(sequence)):
         print('Setting position {}'.format(sequence[position]))
-        if position == 1:
-            with open("temp/last_v.txt","r") as file:
-                voltage = float(file.readline())
-            with open("data/path_1.txt", "a") as file:
-                file.write(str(voltage))
+        if position == 3:
+            ended = False
+            while not ended:
+                try:
+                    with open("temp/last_v.txt","r") as file:
+                        voltage = float(file.readline())
+                    with open("data/path_1.txt", "a") as file:
+                        file.write(str(voltage))
+                        ended = True
+                except:
+                    continue
         if position == len(sequence)-2:
-            with open("temp/last_v.txt","r") as file:
-                voltage = float(file.readline())
-            with open("data/path_1.txt", "a") as file:
-                file.write(" " + str(voltage) + "\n")
-        for i in range(25):
+            ended = False
+            while not ended:
+                try:
+                    with open("temp/last_v.txt","r") as file:
+                        voltage = float(file.readline())
+                    with open("data/path_1.txt", "a") as file:
+                        file.write(" " + str(voltage) + "\n")
+                        ended = True
+                except:
+                    continue
+        for i in range(13):
             cf.commander.send_position_setpoint(sequence[position][0],
                                                 sequence[position][1],
                                                 sequence[position][2],
@@ -186,4 +235,13 @@ if __name__ == '__main__':
         reset_estimator(scf)
         start_position_printing(scf)
         print("Running sequence")
-        run_sequence(scf, sequence)
+        with open("data/path_1.txt", "a") as file:
+            file.write("\n")
+        while True:
+            run_sequence(scf, sequence)
+            for i in range(0,20):
+                scf.cf.commander.send_position_setpoint(2,1,1.5,0)
+                time.sleep(0.1)
+            for i in range(0,20):
+                scf.cf.commander.send_position_setpoint(0.5,0.5,1.5,0)
+                time.sleep(0.1)
