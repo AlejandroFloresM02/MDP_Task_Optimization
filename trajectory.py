@@ -18,4 +18,4 @@ def gen_path(width, length, height, step, padding):
 
 
 if __name__ =="__main__":
-    gen_path(2.2,5.3,1.5,0.3,0.5) #values in mts
+    gen_path(2.2,5.3,1.5,0.5,0.4) #values in mts
