@@ -44,35 +44,11 @@ from cflib.utils import uri_helper
 
 # URI to the Crazyflie to connect to
 uri = uri_helper.uri_from_env(default='radio://0/100/2M/E7E7E7E7E7')
+path_name = "path_1"
 
 # Change the sequence according to your setup
 #             x    y    z  YAW
-sequence = [
-    (0.800,0.400,1.500,0),
-    (0.800,0.900,1.500,0),
-    (0.800,1.400,1.500,0),
-    (1.300,1.800,1.500,0),
-    (1.300,1.300,1.500,0),
-    (1.300,0.800,1.500,0),
-    (1.800,0.400,1.500,0),
-    (1.800,0.900,1.500,0),
-    (1.800,1.400,1.500,0),
-    (2.300,1.800,1.500,0),
-    (2.300,1.300,1.500,0),
-    (2.300,0.800,1.500,0),
-    (2.800,0.400,1.500,0),
-    (2.800,0.900,1.500,0),
-    (2.800,1.400,1.500,0),
-    (3.300,1.800,1.500,0),
-    (3.300,1.300,1.500,0),
-    (3.300,0.800,1.500,0),
-    (3.800,0.400,1.500,0),
-    (3.800,0.900,1.500,0),
-    (3.800,1.400,1.500,0),
-    (4.300,1.800,1.500,0),
-    (4.300,1.300,1.500,0),
-    (4.300,0.800,1.500,0),
-]
+sequence = eval("actions/"+ path_name + ".txt")
 
 
 def wait_for_position_estimator(scf):
@@ -160,7 +136,7 @@ def run_sequence(scf, sequence):
                 try:
                     with open("temp/last_v.txt","r") as file:
                         voltage = float(file.readline())
-                    with open("data/path_2.txt", "a") as file:
+                    with open("data/"+path_name + ".txt", "a") as file:
                         file.write(str(voltage))
                         ended = True
                 except:
@@ -171,7 +147,7 @@ def run_sequence(scf, sequence):
                 try:
                     with open("temp/last_v.txt","r") as file:
                         voltage = float(file.readline())
-                    with open("data/path_2.txt", "a") as file:
+                    with open("data/"+path_name + ".txt", "a") as file:
                         file.write(" " + str(voltage) + "\n")
                         ended = True
                 except:
@@ -199,7 +175,7 @@ if __name__ == '__main__':
         reset_estimator(scf)
         start_position_printing(scf)
         print("Running sequence")
-        with open("data/path_2.txt", "a") as file:
+        with open("data/"+path_name + ".txt", "a") as file:
             file.write("\n")
         while True:
             run_sequence(scf, sequence)

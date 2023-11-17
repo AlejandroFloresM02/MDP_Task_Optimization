@@ -2,8 +2,10 @@ import numpy as np
 import time
 import os
 
-file_name = "data/path_2.txt"
-output = "data/refined_data/path_2.csv"
+path_name = "path_1"
+
+file_name = "data/"+ path_name + ".txt"
+output = "data/refined_data/"+ path_name + ".csv"
 
 batt_high = 3.6 #Lower limit
 batt_mid = 3.40 #Lower limit
@@ -28,6 +30,7 @@ with open(file_name, "r") as file:
             values = line.split(" ")
             if prev_line == "\n":
                 out_file.write(bytes(get_state(float(values[0]))+ ",", "utf8"))
+                out_file.write(bytes(get_state(float(values[1]))+ ",", "utf8"))
             elif line != "\n":
                 out_file.write(bytes(get_state(float(values[1]))+ ",", "utf8"))
             else:
