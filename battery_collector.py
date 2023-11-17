@@ -9,14 +9,15 @@ from cflib.crazyflie.syncLogger import SyncLogger
 from cflib.utils import uri_helper
 
 # URI to the Crazyflie to connect to
-uri = uri_helper.uri_from_env(default='radio://0/80/2M/E7E7E7E7E7')
+drone_id = "80"
+uri = uri_helper.uri_from_env(default='radio://0/'+ drone_id + '/2M/E7E7E7E7E7')
 v_drop = 0.56
 
 def voltage_callback(timestamp, data, logconf):
     bat = data["pm.vbat"]-v_drop
     print(bat, bat + v_drop)
     try:
-        with open("temp/last_v.txt", "w") as file:
+        with open("temp/last_v"+drone_id+".txt", "w") as file:
             file.write(str(bat))
     except:
         print("Busy")
@@ -39,9 +40,9 @@ def recharge_seq(scf):
             ended = False
             while not ended:
                 try:
-                    with open("temp/last_v.txt","r") as file:
+                    with open("temp/last_v"+drone_id+".txt","r") as file:
                         voltage = float(file.readline())
-                    with open("data/recharge.txt", "a") as file:
+                    with open("data/recharge"+drone_id+".txt", "a") as file:
                         file.write(str(voltage) + " ")
                         ended = True
                 except:
@@ -50,9 +51,9 @@ def recharge_seq(scf):
             ended = False
             while not ended:
                 try:
-                    with open("temp/last_v.txt","r") as file:
+                    with open("temp/last_v"+drone_id+".txt","r") as file:
                         voltage = float(file.readline())
-                    with open("data/recharge.txt", "a") as file:
+                    with open("data/recharge" + drone_id + ".txt", "a") as file:
                         file.write(str(voltage) + "\n")
                         ended = True
                 except:
@@ -61,9 +62,9 @@ def recharge_seq(scf):
             ended = False
             while not ended:
                 try:
-                    with open("temp/last_v.txt","r") as file:
+                    with open("temp/last_v"+drone_id+".txt","r") as file:
                         voltage = float(file.readline())
-                    with open("data/recharge.txt", "a") as file:
+                    with open("data/recharge" + drone_id + ".txt", "a") as file:
                         file.write(str(voltage) + "\n" + str(voltage))
                         ended = True
                 except:
@@ -81,6 +82,6 @@ if __name__ == '__main__':
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
         start_voltage_printing(scf)
         print("Running sequence")
-        with open("data/recharge.txt", "a") as file:
+        with open("data/recharge" + drone_id + ".txt", "a") as file:
             file.write("\n")
         recharge_seq(scf)
