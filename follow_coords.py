@@ -48,7 +48,9 @@ path_name = "path_1"
 
 # Change the sequence according to your setup
 #             x    y    z  YAW
-sequence = eval("actions/"+ path_name + ".txt")
+with open("actions/"+ path_name + ".txt","r")as path_file:
+    path = path_file.read()
+sequence = eval(path)
 
 
 def wait_for_position_estimator(scf):
