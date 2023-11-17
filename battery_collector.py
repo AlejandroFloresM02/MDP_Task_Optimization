@@ -65,7 +65,7 @@ def recharge_seq(scf):
                     with open("temp/last_v"+drone_id+".txt","r") as file:
                         voltage = float(file.readline())
                     with open("data/recharge" + drone_id + ".txt", "a") as file:
-                        file.write(str(voltage) + "\n" + str(voltage))
+                        file.write(str(voltage) + "\n" + str(voltage) + " ")
                         ended = True
                 except:
                     continue

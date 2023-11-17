@@ -2,7 +2,7 @@ import numpy as np
 import time
 import os
 
-path_name = "path_1"
+path_name = "recharge"
 
 file_name = "data/"+ path_name + ".txt"
 output = "data/refined_data/"+ path_name + ".csv"
