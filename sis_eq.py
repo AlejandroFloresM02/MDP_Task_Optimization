@@ -47,7 +47,7 @@ actions = dict(zip(actions, [i for i in range(1, len(actions)+1)]))
 state_names = ["CRITICAL","LOW","MEDIUM","HIGH"]
 
 #trans_mats_arr = np.array([[float(x) for x in rec] for rec in csv.reader(open("data/trans_mats.csv"))])
-trans_mats = joinMats(["SM_trans_mat_circ.csv","SM_trans_mat_wp.csv","SM_trans_mat_hover.csv","SM_trans_mat_recharge.csv"]) #Make sure this is the same order as the actions
+trans_mats = joinMats(["SM_trans_mat_path_1.csv","SM_trans_mat_path_2.csv","SM_trans_mat_path_3.csv","SM_trans_mat_recharge.csv"]) #Make sure this is the same order as the actions
 u_pairs = findUniquePairs(trans_mats)
 #print(trans_mats[0])
 
@@ -104,7 +104,7 @@ for iter in range(iter_limit):
         new_state_values[state] = np.max(action_values)
     state_values = new_state_values
 
-print(state_values)
+#print(state_values)
 
 
 optimal_policy = np.zeros(states_amount, dtype=int)  # Inicializa una política arbitraria
@@ -132,5 +132,6 @@ ext_names = []
 for i in u_pairs:
     ext_names.append(state_names[int(i[0])-1])
     
-frame = pd.DataFrame({"Sate name":ext_names,"Sate":u_pairs[:,0].astype(int),"Backward":u_pairs[:,1].astype(int),"Action index":optimal_policy,"Action":optimal_policy_names})
+frame = pd.DataFrame({"State name":ext_names,"State":u_pairs[:,0].astype(int),"Backward":u_pairs[:,1].astype(int),"Action index":optimal_policy,"Action":optimal_policy_names})
+frame = frame.sort_values(["State", "Backward"],ascending=[False, True])
 print(frame.to_string(index=False))
