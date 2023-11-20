@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.io import loadmat
 import pandas as pd
 import csv 
 
