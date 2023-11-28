@@ -9,7 +9,7 @@ while len(queue)>0:
     action_set = set(queue)
     #print(action_set)
     state = int(input("Current state: "))
-    backwrd =int(input("Currend backward: "))
+    backwrd =int(input("Current backward: "))
     if not (1<=state<=4 and backwrd>=0):
         print("invalid args")
         continue
