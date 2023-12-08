@@ -95,12 +95,7 @@ def getPolicy(actions):
                     else:
                         backward = 0 
                     #print(trans_mats[actions[key]][:,0:2])
-                    try:
-                        next_pair_index = findActionPairIndex(trans_mats[actions[key]][:,0:2],np.array([next_state+1,backward]))
-                    except:
-                        continue
                     #print("state/bckwrd", u_pairs[state])
-                    #print("next state/bckwrd", trans_mats[actions[key]][next_pair_index][0:2])
                     action_val += discount_fact * trans_mats[actions[key]][pair_index][next_state+2] * state_values[next_state]
                 #print("Last for done")
                 action_values[actions[key]] = action_val
@@ -128,7 +123,6 @@ def getPolicy(actions):
         optimal_policy[state] = np.argmax(action_values)
 
     optimal_policy_names = []
-    actions_list = list(actions)
     #print(action_values)
     for i in range(len(optimal_policy)):
         optimal_policy_names.append(all_actions[optimal_policy[i]])
@@ -142,5 +136,5 @@ def getPolicy(actions):
     return frame
 
 if __name__ == '__main__':
-    getPolicy(["navigate1","navigate2","navigate3"])
+    getPolicy([0,1,1,0,2,2])
     

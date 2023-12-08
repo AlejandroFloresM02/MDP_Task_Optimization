@@ -42,15 +42,7 @@ from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.crazyflie.syncLogger import SyncLogger
 from cflib.utils import uri_helper
 
-# URI to the Crazyflie to connect to
-uri = uri_helper.uri_from_env(default='radio://0/100/2M/E7E7E7E7E7')
-path_name = "path_1"
 
-# Change the sequence according to your setup
-#             x    y    z  YAW
-with open("actions/"+ path_name + ".txt","r")as path_file:
-    path = path_file.read()
-sequence = eval(path)
 
 
 def wait_for_position_estimator(scf):
@@ -108,7 +100,7 @@ def position_callback(timestamp, data, logconf):
     y = data['kalman.stateY']
     z = data['kalman.stateZ']
     bat = data["pm.vbat"]
-    print('pos: ({}, {}, {}, {})'.format(x, y, z, bat))
+    #print('pos: ({}, {}, {}, {})'.format(x, y, z, bat))
     try:
         with open("temp/last_v.txt", "w") as file:
             file.write(str(bat))
@@ -127,7 +119,7 @@ def start_position_printing(scf):
     log_conf.start() 
 
 
-def run_sequence(scf, sequence):
+def run_sequence(scf, sequence, path_name):
     cf = scf.cf
 
     for position in range(len(sequence)):
@@ -165,10 +157,18 @@ def run_sequence(scf, sequence):
     cf.commander.send_stop_setpoint()
     # Make sure that the last packet leaves before the link is closed
     # since the message queue is not flushed before closing
-    time.sleep(0.1)
 
 
 if __name__ == '__main__':
+    # URI to the Crazyflie to connect to
+    uri = uri_helper.uri_from_env(default='radio://0/100/2M/E7E7E7E7E7')
+    path_name = "path_1"
+
+    # Change the sequence according to your setup
+    #             x    y    z  YAW
+    with open("actions/"+ path_name + ".txt","r")as path_file:
+        path = path_file.read()
+    sequence = eval(path)
     print("Loading drivers")
     cflib.crtp.init_drivers(enable_debug_driver=False)
     print("Drivers loaded")
@@ -180,7 +180,7 @@ if __name__ == '__main__':
         with open("data/"+path_name + ".txt", "a") as file:
             file.write("\n")
         while True:
-            run_sequence(scf, sequence)
+            run_sequence(scf, sequence, path_name)
             for i in range(0,20):
                 scf.cf.commander.send_position_setpoint(2,1,1.5,0)
                 time.sleep(0.1)

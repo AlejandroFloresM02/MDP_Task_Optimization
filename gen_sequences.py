@@ -2,15 +2,16 @@ import numpy as np
 import time
 import os
 
-path_name = "recharge"
+path_name = "path_1"
 
 file_name = "data/"+ path_name + ".txt"
 output = "data/refined_data/"+ path_name + ".csv"
 
 batt_high = 3.6 #Lower limit
 batt_mid = 3.40 #Lower limit
-batt_low = 3.285 #Lower limit
-batt_crit = 3.285 #Upper limit
+
+batt_low = 3.32 #Lower limit
+batt_crit = 3.32 #Upper limit
 #Values assigned through observation
 
 def get_state(voltage):
@@ -20,7 +21,10 @@ def get_state(voltage):
         return "3"
     elif voltage > batt_low:
         return "2"
-    return "1"
+    elif voltage > 0:
+        return "1"
+    else:
+        return "-1"
 
 with open(file_name, "r") as file:
     with open(output, "wb+") as out_file:
